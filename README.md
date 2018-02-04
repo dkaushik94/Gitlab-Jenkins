@@ -1,6 +1,6 @@
 # Homework 1
 
-Your first homework assignment is to create a DevOps application workflow for automatically building and analyzing software applications. As part of the DevOps application workflow, you will use the Application Programming Interface (API) of the tool called Understand (https://scitools.com/non-commercial-license/), a static code analysis tool that supports many programming languages and it is used by many Fortune 500 companies. You should apply for a non-commercial license immediately, install the tool, and investigate its IDE and its API libraries. You can complete this homework using a language of your choice, e.g., Java or Scala or Python or Go or Clojure or simply the utility curl when applicable (I prefer that you use Java for this assignment). You will use SBT or Gradle - your choice - for building the project. You can use the latest community version of IntelliJ IDE for this assignment.
+Your first homework assignment is to create a DevOps application workflow for automatically building and analyzing software applications. As part of the DevOps application workflow, you will use the Application Programming Interface (API) of the tool called Understand (https://scitools.com/non-commercial-license/), a static code analysis tool that supports many programming languages and it is used by many Fortune 500 companies. You should apply for a non-commercial license immediately, install the tool, and investigate its IDE and its API libraries. You can complete this homework using a language of your choice, e.g., Java or Scala or Python or Go or Clojure or simply the utility curl when applicable (I prefer that you use Java for this assignment). You will use SBT or Gradle - your choice - for building the project. You can use the latest community version of *IntelliJ IDE* for this assignment.
 
 The goal of this homework is to gain hands-on experience with DevOps workflows and analyzing the source code of object-oriented applications statically as part of the workflow to obtain information about relationships among variables and types in these applications. You will create a simulation of the DevOps workflow at an enterprise level. Within your simulated enterprise DevOps you will install and configure the GitLab server that is used by many companies to implement a scalable Git-based fully integrated platform for software development (https://docs.gitlab.com/ee/README.html). Then, you will install Jenkins and you will set up Jenkins+Gitlab integration, install Jenkins Jacoco (or Cobertura) plugin for Java code coverage, install Jenkins Job DSL Plugin for programmatically creating Jenkins jobs, and this Jenkins Job DSL Plugin exposes a Jacoco (or Cobertura) interface that you will use to run tests and obtain information about test coverage. The idea is to allow software engineers to create and update software projects by pushing them into your Gitlab server and when doing so to test and analyze the code in the repo automatically and report results.
 
@@ -22,10 +22,10 @@ Submission deadline: Saturday, March 8 at 7PM CST. Your submission will include 
 THE INSTRUCTOR WILL NOT ANSWER ANY REQUESTS FROM STUDENTS STARTING 7PM THE NIGHT BEFORE THE SUBMISSION DEADLINE.
 
 Evaluation criteria:
-..* the maximum grade for this homework is 15%. Points are subtracted from this maximum grade: for example, saying that 2% is lost if some requirement is not completed means that the resulting grade will be 15%-2% => 13%;
-..* no comments or insufficient comments: up to 10% lost;
-..* no unit and integration tests: up to 10% lost;
-..* code does not compile or it crashes without completing the core functionality: up to 10% lost;
-..* the documentation is missing or insufficient to understand how to compile and run your program: up to 10% lost;
-..*- only a subset of your functionality works: up to 10% lost;
-..* the minimum grade for this homework cannot be less than zero.
+* the maximum grade for this homework is 15%. Points are subtracted from this maximum grade: for example, saying that 2% is lost if some requirement is not completed means that the resulting grade will be 15%-2% => 13%;
+* no comments or insufficient comments: up to 10% lost;
+* no unit and integration tests: up to 10% lost;
+* code does not compile or it crashes without completing the core functionality: up to 10% lost;
+* the documentation is missing or insufficient to understand how to compile and run your program: up to 10% lost;
+*- only a subset of your functionality works: up to 10% lost;
+* the minimum grade for this homework cannot be less than zero.
