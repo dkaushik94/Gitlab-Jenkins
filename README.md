@@ -23,9 +23,15 @@ THE INSTRUCTOR WILL NOT ANSWER ANY REQUESTS FROM STUDENTS STARTING 7PM THE NIGHT
 
 Evaluation criteria:
 * the maximum grade for this homework is 15%. Points are subtracted from this maximum grade: for example, saying that 2% is lost if some requirement is not completed means that the resulting grade will be 15%-2% => 13%;
+
 * no comments or insufficient comments: up to 10% lost;
+
 * no unit and integration tests: up to 10% lost;
+
 * code does not compile or it crashes without completing the core functionality: up to 10% lost;
+
 * the documentation is missing or insufficient to understand how to compile and run your program: up to 10% lost;
-*- only a subset of your functionality works: up to 10% lost;
+
+* only a subset of your functionality works: up to 10% lost;
+
 * the minimum grade for this homework cannot be less than zero.
