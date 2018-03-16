@@ -25,7 +25,7 @@ except Exception:
 
 #Variables.
 GITHUB_URL = "https://api.github.com/search/repositories?q=language:java"
-GITLAB_URL = "http://localhost"
+GITLAB_URL = "http://localhost:80/"
     
 
 
@@ -37,7 +37,7 @@ def fetch_repos(username, password, gl):
         r = requests.get(GITHUB_URL, auth = (username,password))
         clone_urls = {}
         
-        for item in r.json()['items'][:15]:
+        for item in r.json()['items'][:8]:
             clone_urls[item['name']] = item['clone_url']
 
         for item in clone_urls:

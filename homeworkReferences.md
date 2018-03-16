@@ -4,15 +4,12 @@
 
 [GitLab Documentation on docker image](https://docs.gitlab.com/omnibus/docker/README.html)
 
-```
+``` bash
 sudo docker run --detach \
-    --hostname gitlab.example.com \
-    --publish 443:443 --publish 80:80 --publish 22:22 \
-    --name gitlab \
+    --hostname gitlab-new.example.com \
+    --publish 221:221 --publish 90:90 --publish 222:222 \
+    --name gitlab-test \
     --restart always \
-    --volume /srv/gitlab/config:/etc/gitlab \
-    --volume /srv/gitlab/logs:/var/log/gitlab \
-    --volume /srv/gitlab/data:/var/opt/gitlab \
     gitlab/gitlab-ce:latest
 ```
 
@@ -27,4 +24,3 @@ sudo docker run --detach \
 docker pull jenkins
 docker run -p 8080:8080 --name=jenkins-master jenkins
 ```
-
