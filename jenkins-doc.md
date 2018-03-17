@@ -43,7 +43,7 @@ A fresh view of jenkins should look like Fig 1.8
 
 ![jenkins_running_done](./screenshots/jenkins_ready.png)
 
-We now need to setup plugins in jenkins. Run the install_plugins script - `python3 install_plugins.py`<br/>
+We now need to setup plugins in jenkins. Run the install_plugins script - `python3 install_plugins.py`</br>
 If the output is `True`, run the command `docker restart jenkins-master` to restart jenkins
 
 ![plugin_install](./screenshots/plugin_install.png)
@@ -54,7 +54,7 @@ Go to `Manage Jenkins` > `Configure System`. Here gitlab section is not configur
 
 ![gitlab_config](./screenshots/gitlab_config.png)
 
-We need to give some details:<br/>
+We need to give some details:</br>
 • Connection name : A name for gitlab connection which we'll later refer in each of the job created as well as job DSL. This connection is global for jenkins. We'll give ```gitlab``` as the name.
 
 • Gitlab host url: This is the url of the gitlab container running in the system. We enter `http://172.17.0.2:80/`
@@ -140,5 +140,34 @@ We need to now run the create_master_job script which will accomplish all of thi
 This has now created a job for each of the repo present in the gitlab as shown below
 
 ![jobs_created](./screenshots/jobs_created.png)
+
+## Webhooks
+
+Once all the jobs are created in the jenkins, we need to create webhooks. For this we'll run `jenkins_job_fetch.py` which will look at all the jobs created and add webhook to each of the repo in gitlab using python gitlab. Run the command `python3 jenkins_job_fetch.py`. Then head to gitlab to see webhooks created for each project as shown below.</br>
+
+You can naviagate to Integrations part of any of the repo to find the hook created. 
+
+![navigate_to_hook](./screenshots/navigate_to_hook.png)
+
+In the integrations part, once you scroll down, you can see the hook. Click on test and you should see a success message on top. As you can see, the url in the the webhook is the project url of jenkins job.
+
+![hook_created](./screenshots/hook_created.png)
+
+![hook_success](./screenshots/hook_success.png)
+
+Now any push or commits in the repo will automatically trigger a build in jenkins. Lets try that out!</br>
+
+Lets edit the README.md file and push the changes to see if its triggering a build.
+
+![readme_edit](./screenshots/readme_edit.png)
+
+Once the changes are pushed, we head to jenkins job for the same project `MPAndroidChart` and we can see builds have been triggered. On the left bottom corner, we can see builds and a message indicating `Started ​by ​GitLab ​push ​by ​Administrator`
+
+![jenkins_build_trigger](./screenshots/jenkins_build_trigger.png)
+
+
+
+
+
 
 
