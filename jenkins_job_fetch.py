@@ -20,10 +20,14 @@ except Exception:
     import requests
 
 GITLAB_URL = "http://localhost:80"
+# Logging into jenkins and accessing the server object
 server = jenkins.Jenkins('http://localhost:8080', username=sys.argv[1], password=sys.argv[2])
+
+# get jobs API gives us all the jobs with all necessary info about each of them
 jenkins_jobs = server.get_jobs()
 gl = gitlab.Gitlab(GITLAB_URL, private_token = "8AspReuy7QzCuxRL2jar")
 
+# We need to get URLs of all the jobs so we can use them to add webhooks to each of the repos in gitlab
 jenkins_job_urls = {}
 for job in jenkins_jobs:
     jenkins_job_urls[job['name']] = job['url'].replace("job", "project").replace("localhost", "172.17.0.3")
