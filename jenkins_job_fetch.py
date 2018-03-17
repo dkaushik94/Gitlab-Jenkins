@@ -41,7 +41,6 @@ for item in jenkins_job_urls:
                 else:
                     id = it.id
                     project = it
-        # print(jenkins_job_urls[item])
         print("\033[1:32mCreating hook for:\033[1;m", project.name)
         # Creating Hook for current repo.
         try:
