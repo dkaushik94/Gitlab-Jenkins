@@ -24,7 +24,7 @@ GITHUB_REPOS = 'https://api.github.com/search/repositories?q=language:'
 GITHUB_COMMIT_LIST = 'https://api.github.com/repos/'
 
 
-def calc_changes(repo_sha, gc, username, password):
+def calc_changes(repo_sha, gc, output_file, username, password):
     """
         Calculate the most changed file for a commit for a repository.
     """
@@ -32,6 +32,8 @@ def calc_changes(repo_sha, gc, username, password):
         #Iterate over the sha.
         for it, item in enumerate(repo_sha):
             print("\nRepository:","\033[1;35m" ,item, "\033[1;m")
+            output_file.write('\n')
+            output_file.write("## "+item)
             for item2 in repo_sha[item]:
                 #API call to fetch commit meta data like author and files..etc.
                 r2 = requests.get(gc + '/' + item2, auth = (username, password))
@@ -45,6 +47,12 @@ def calc_changes(repo_sha, gc, username, password):
                     else:
                         pass
                 print("For commit","\033[1;32m" ,item2, "\033[1;m",'most changed file is:' , "\033[1;32m", change_file, "\033[1;m")
+                out = 'For commit ' + item2 + ' most changed file is: ' + '*' + change_file + '*'
+                output_file.write('\n')
+                output_file.write("* "+out)
+
+            output_file.write('\n')
+                
     except Exception:
         print(traceback.format_exc())
 
@@ -55,6 +63,14 @@ def analytics(username, password):
         And call analytics function on this data.
     """
     try:
+        try:
+            output_file = open('analytics.md', 'w')
+            output_file.write('')
+            output_file.write('# GIT ANALYTICS')
+        except Exception:
+            os.system('touch analytics.txt')
+            output_file = open('analytics.txt', 'w')
+        
         print("\033[1;37mFetching repository data for 15 repos...\033[1;m", end = '')
         r1 = requests.get(GITHUB_REPOS, auth = (username, password))
         #Running for 15 repositories for this excerise.
@@ -73,8 +89,8 @@ def analytics(username, password):
                 else:
                     repo_sha[repo] = [item2['sha']]
             #Calculate the analytics.
-            calc_changes(repo_sha, gc, username, password)
-
+            calc_changes(repo_sha, gc, output_file, username, password)
+        output_file.close()
     except Exception:
         print(traceback.format_exc())
 
@@ -82,14 +98,14 @@ def analytics(username, password):
 #Initiate routine.
 if __name__ == "__main__":
     try:
-        print("\033[1;37mInput language as same as the one with which you fetched repos: \033[1;m", end = '')
+        print("\033[1;37m\nInput language as same as the one with which you fetched repos: \033[1;m", end = '')
         language = input()
         while not language:
             print("Input Language: ", end = '')
             language = input()
         GITHUB_REPOS = GITHUB_REPOS + language
         print("\033[1;32m\nThis script will take the latest 4 commits of the repo and indicate the most\n\
-changed file in order to effectively test it and see if there is a patch.\033[1;m")
+changed file in order to effectively test it and see if there is a patch.\n\033[1;m")
         analytics(sys.argv[1], sys.argv[2])
     except Exception:
         print(traceback.format_exc())
