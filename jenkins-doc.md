@@ -48,12 +48,6 @@ If the output is `True`, run the command `docker restart jenkins-master` to rest
 
 ![plugin_install](./screenshots/plugin_install.png)
 
-> For some reason, Gitlab plugin is not getting installed through python-jenkins. For this one, we'll install manually.
-
-Go to `Manage Jenkins` > `Manage Plugins`. Click on `Available` tab and search for `Gitlab`. Select and install the plugin.
-
-![gitlab_plugin](./screenshots/gitlab_plugin.png)
-
 ### Now we need to configure the gitlab plugin.
 
 Go to `Manage Jenkins` > `Configure System`. Here gitlab section is not configured and should look like this one below
@@ -75,5 +69,76 @@ Once this is setup, click on test connection. This should return `success` as sh
 
 > If you are getting any error, check the url of gitlab. It should not be localhost. Since we are running gitlab and jenkins through docker, jenkins and gitlab are running in the lan of docker. jenkins needs to refer to gitlab within that network. So, to get the address of gitlab, in bash of gitlab, find the url at `/etc/hosts` file. Enter that url here.
 
+## Job Creation
+
+We need to create jobs for each of the repos setup in gitlab. For this we'll use job DSL plugin to do it. Job DSL is written in groovy to fetch all the projects in gitlab and setup a job for each of the repo setup in gitlab. Below is the code for job DSL
+
+``` groovy
+
+    String private_token = "sc24K_e5avo6QjiF7G7c"
+    String ip = "http://172.17.0.2:80/"
+		def jdata = new groovy.json.JsonSlurper().parseText(new URL("http://172.17.0.2:80/api/v3/projects?private_token="+private_token).text)
+		jdata.each {
+			String repo_url = it.ssh_url_to_repo
+          	repo_url = repo_url.replace("git@gitlab.example.com:",ip)
+            String proj =  repo_url.substring(repo_url.lastIndexOf('/') + 1);
+			String project_name =  proj[0..-5]
+            job(project_name) {
+  
+                description('A job for the project: ' + project_name)
+                displayName(project_name)
+
+                scm {
+                    git {
+                    branch('master')
+                    remote { 
+                        url(repo_url)
+                        credentials('gitlab-root-user')
+                    }
+                    }
+                }
+  
+                steps {
+                    gradle('check')
+                    gradle {
+                    tasks('clean')
+                    tasks('build')
+                    switches('--stacktrace')
+                    switches('--debug')
+                
+                    }
+                    
+                }
+                
+                publishers {
+                    jacocoCodeCoverage {
+                        execPattern '**/**.exec'
+                        classPattern '**/classes'
+                        sourcePattern '**/src/main/java'
+                        exclusionPattern ''
+                        inclusionPattern ''
+                    }
+                
+                }
+                
+                triggers {
+                        gitlabPush {
+                            buildOnMergeRequestEvents(true)
+                            buildOnPushEvents(true)
+                        }
+                    }
+  
+                authenticationToken('auhgtbereb675nksnwewrhbbe==')
+  
+            }
+		}
+```
+We use this code as part of the script in a master job xml. We again use python jenkins to create a master job and then build the created job. This job will inturn create a job for each of the repo in gitlab. It is important to verify the url and replace the `private_token` with the one we got in gitlab.</br>
+
+We need to now run the create_master_job script which will accomplish all of this. Open terminal and run the command `python3 create_master_job.py` </br>
+
+This has now created a job for each of the repo present in the gitlab as shown below
+
+![jobs_created](./screenshots/jobs_created.png)
 
 
