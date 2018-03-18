@@ -208,7 +208,7 @@ This has now created a job for each of the repo present in the gitlab as shown b
 
 ## Webhooks
 
-Once all the jobs are created in the jenkins, we need to create webhooks. For this we'll run `jenkins_job_fetch.py` which will look at all the jobs created and add webhook to each of the repo in gitlab using python gitlab. Run the command `python3 jenkins_job_fetch.py`. Then head to gitlab to see webhooks created for each project as shown below.</br>
+Once all the jobs are created in the jenkins, we need to create webhooks. For this we'll run `create_webhooks.py` which will look at all the jobs created and add webhook to each of the repo in gitlab using python gitlab. Run the command `python3 create_webhooks.py`. Then head to gitlab to see webhooks created for each project as shown below.</br>
 
 You can naviagate to Integrations part of any of the repo to find the hook created. 
 
@@ -302,7 +302,7 @@ Note: *You may delete the analytics.md file as its a previously generated file a
 
 ### 4. Webhook creation
 
-`webhook_test.py` runs the jenkins_job_fetch.py to add webhooks for each jenkins job associated with the gitlab repo. Now once webhooks are setup, we push a sample text file to one of the repo and then check if there was an increment in the build number for the corresponding jenkins job.
+Now once webhooks are setup, we push a sample text file to one of the repo and then check if there was an increment in the build number for the corresponding jenkins job.
 
 
 
