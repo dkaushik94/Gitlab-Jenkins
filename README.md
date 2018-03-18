@@ -309,7 +309,7 @@ Now once webhooks are setup, we push a sample text file to one of the repo and t
 
 # Limitations of the Project
 
-* Gradle : Gradle configurations of projects can be very different and build often fails. It is very difficult to analyze each repo and then make changes to the job created in the JOb DSL script. If the project is built using maven or sbt, again its very difficult to setup the build options in JOb DSL for all possible build configurations sepcified in the project repositories.
+* Gradle : Gradle configurations of projects can be very different and build often fails. It is very difficult to analyze each repo and then make changes to the job created in the Job DSL script. If the project is built using maven or sbt, again its very difficult to setup the build options in Job DSL for all possible build configurations sepcified in the project repositories.
 * Due to the programmatic creatino of webhooks, we were not able to put authentication of webhooks and they were created without the token. This can be overcome by creating the webhooks manually. 
 * We are using python-jenkins package. While we can do almost all jenkins tasks with the python jenkins, some very specific things can't be done. For example, we needed to configure gitlab plugin in system configuration in jenkins. We couldn't do it with python-jenkins or jenkins-cli. The API support is not there for all possible plugin configuration. The only possible options are to use automation tools like selenium or to do it manually.
 
