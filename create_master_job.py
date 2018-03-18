@@ -127,8 +127,10 @@ job_xml = """
 # If you had used a different credentials, please the follwowing with valid credentials.
 server = jenkins.Jenkins('http://localhost:8080',username='root',password='password')
 
+print("Creating a master job containing DSL script.....")
 # Create Job API of python-jenkins will create a job using the xml defined above.
 server.create_job('master',job_xml)
 
+print("Building the master job containing DSL script.....")
 # Build Job API of Python-Jenkins triggers a build given a valid job name.
 server.build_job('master')
