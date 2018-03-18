@@ -1,39 +1,308 @@
-# Homework 1
+# GitLab Setup
 
-Your first homework assignment is to create a DevOps application workflow for automatically building and analyzing software applications. As part of the DevOps application workflow, you will use the Application Programming Interface (API) of the tool called Understand (https://scitools.com/non-commercial-license/), a static code analysis tool that supports many programming languages and it is used by many Fortune 500 companies. You should apply for a non-commercial license immediately, install the tool, and investigate its IDE and its API libraries. You can complete this homework using a language of your choice, e.g., Java or Scala or Python or Go or Clojure or simply the utility curl when applicable (I prefer that you use Java for this assignment). You will use SBT or Gradle - your choice - for building the project. You can use the latest community version of *IntelliJ IDE* for this assignment.
+## Installing GitLab using the docker image
 
-The goal of this homework is to gain hands-on experience with DevOps workflows and analyzing the source code of object-oriented applications statically as part of the workflow to obtain information about relationships among variables and types in these applications. You will create a simulation of the DevOps workflow at an enterprise level. Within your simulated enterprise DevOps you will install and configure the GitLab server that is used by many companies to implement a scalable Git-based fully integrated platform for software development (https://docs.gitlab.com/ee/README.html). Then, you will install Jenkins and you will set up Jenkins+Gitlab integration, install Jenkins Jacoco (or Cobertura) plugin for Java code coverage, install Jenkins Job DSL Plugin for programmatically creating Jenkins jobs, and this Jenkins Job DSL Plugin exposes a Jacoco (or Cobertura) interface that you will use to run tests and obtain information about test coverage. The idea is to allow software engineers to create and update software projects by pushing them into your Gitlab server and when doing so to test and analyze the code in the repo automatically and report results.
+> The setup requires docker. Find information to install docker [here](https://docs.docker.com/install/)
 
-At a high level, you will simulate the work of software engineers (SE) at an enterprise by pulling commits of Java (or some other language) git projects from Github using its API calls and inserting them into remote repos on your locally installed Gitlab server. The input to your SE simulating application is the language which will be used to filter open-source projects from Github, which is a publically available and it limits the rate of communications from its non-paying clients to 1,000 projects a day. Some API calls, e.g., GET content, have the upper limits of 1,000 files for a directory and 1MB in size. In many cases, the limits that Github imposes on some API calls can be bypassed by using some other API calls, e.g., GET tree recursively. In your DevOps, one component simulates SE by obtaining the content of various Java open-source projects and their attributes, pushing it into your Gitlab storage, and the other components in your DevOps will determine how to build the pushed projects (e.g., via using Maven, Gradle, or Sbt), and once built, tests will run and test coverage and test passing information will be collected. Then, the Understand API calls will be used by some component in your DevOps to process the content of the obtained software applications and to construct the dependency graphs and output a report about modules that have the most dependencies. All kinds of variations are possible here - use your imagination!
-
-In this homework, you will use the Github Developer API not only to stream open-source software projects but also metainformation about them to determine various statistics and to recommend actions to github developers, for example, to recommend what components of the open-source project should be re-tested based on the diff or the patch created as a result of the last code push. Git patches are metadata files that describe how to apply changes to the source code of the previous version of the application to switch to the next consecutive version of the same application. For example, the following lines in a patch "- int a = 2" and "+ float b = 3" would mean that the declaration and initialization of the variable a in some Java file is replaced with the declaration and initalization of the variable b, hence + and - signs in the beginning of the lines. You can find more information in various sources (e.g., https://git-scm.com/docs/git-format-patch).
-
-Please make sure that you were already added as a member of CS_540_2018 team in Bitbucket. Separate repositories will be created for each of your homeworks and for the course project. You will find a corresponding entry for this homework. You will fork this repository and your fork will be private, no one else besides you, your teammates and your course instructor will have access to your fork. Please remember to grant a read access to your repository to your instructor. You can commit and push your code as many times as you want. Your code will not be visible and it should not be visible to other students, except for your teammates. When you push it, your instructor will see you code in your separate private fork. Making your fork public or inviting other students to join your fork will result in losing your grade. For grading, only the latest push timed before the deadline will be considered. If you push after the deadline, your grade for the homework will be zero. For more information about using git and bitbucket specifically, please use this link as the starting point https://confluence.atlassian.com/bitbucket/bitbucket-cloud-documentation-home-221448814.html.
-
-For an additional bonus (up to 5%!) you can integrate other Github data into your project. Your ideas and creativity are highly welcome and will be rewarded! For example, you can obtain issues for each pulled software project and you can attempt to link these issues to specific patches. Or you can link reactions to specific commits and rank program modules w.r.t. reactions types and commits associated with these modules. You can create a separate database into which you can save the attributes of the pulled repos and bug reports. In short, your additional bonus will be based on how you connect various sources of information, not on simply downloading bits and pieces of information. Let your imagination fly!
-
-Even though this is a individual homework, it can be done collaboratively. You are allowed to form groups with up to three teammates. If you want to work alone, it is perfectly fine. Logistically, one of you will create a private fork and will invite one or two of her classmates with the write access to your fork. You should be careful - once you form a group and write and submit code, you cannot start dividing your work and claim you did most of the work. Your forkmates may turn out to be freeloaders and you will be screwed. Be very careful and make sure that you trust your classmates before forming your group. I cannot and I will not resolve your internal group conflicts. Your submission will include the names of all of your forkmates and you will receive the same grade for this homework. Working in a group will be an excellent opportunity for you to explore branching in git, merging, and resolving semantic conflicts when merging your code changes. Don't pass on this opportunity!
-
- I allow you to post questions and replies, statements, comments, discussion, etc. on Piazza. Remember that you cannot share your code and your solutions, but you can ask and advise others using Piazza on where resources and sample programs can be found on the internet, how to resolve dependencies and configuration issues, and how to design the logic of the algorithms and the workflows. Yet, your implementation should be your own or your team's and you cannot share it with the entire class. Alternatively, you cannot copy and paste someone else's implementation and put your name on it. Your submissions will be checked for plagiarism. When posting question and answers on Piazza, please select the appropriate folder, i.e., hw1 to ensure that all discussion threads can be easily located.
-
-Submission deadline: Saturday, March 8 at 7PM CST. Your submission will include your source code, detailed documentation on all aspects of the installation and configuration of your solution, the SBT build configuration, the README.md file in the root directory that contains the description of your implementation, how to compile and run it using SBT, and what are the limitations of your implementation. Please follow this naming convention while submitting your work : "Firstname_Lastname_hw1", so that we can easily recognize your submission. Those who work in groups can use longer names: "Firstname1_Lastname1_Firstname2_Lastname2_Firstname3_Lastname3_hw1". I repeat, please make sure that you will give me read access to your private forked repository.
+Run the following command to install gitlab. Once installed, we can see gitlab container running. You can find this info by running the command `docker ps -a`
 
 
-THE INSTRUCTOR WILL NOT ANSWER ANY REQUESTS FROM STUDENTS STARTING 7PM THE NIGHT BEFORE THE SUBMISSION DEADLINE.
+```
+sudo docker run --detach \
+--hostname gitlab.example.com \
+--publish 443:443 --publish 80:80 --publish 22:22 \
+--name gitlab \
+--restart always \
+gitlab/gitlab-ce:latest
+```
 
-Evaluation criteria:
-* the maximum grade for this homework is 15%. Points are subtracted from this maximum grade: for example, saying that 2% is lost if some requirement is not completed means that the resulting grade will be 15%-2% => 13%;
+![gitlab_install](./screenshots/gitlab_run.png)
 
-* no comments or insufficient comments: up to 10% lost;
+Now go to `https://localhost:80/` to find gitlab up and running. If its not available yet, wait for few minutes till you can see gitlab up and healty. 
+![gitlab_running](./screenshots/gitlab_running.png)
 
-* no unit and integration tests: up to 10% lost;
+Setup a new password and this will be the password for the user `root` which is by default an admin user. You can create more users as required. Once the password is setup, you can login to gitlab as shown below.
 
-* code does not compile or it crashes without completing the core functionality: up to 10% lost;
+![gitlab_admin_pwd_setup](./screenshots/gitlab_admin_pwd_setup.png)
 
-* the documentation is missing or insufficient to understand how to compile and run your program: up to 10% lost;
+![gitlab_login](./screenshots/gitlab_login.png)
 
-* only a subset of your functionality works: up to 10% lost;
+Now navigate to user's settings. 
 
-* the minimum grade for this homework cannot be less than zero.
+![user_settings](./screenshots/user_settings.png)
 
-------
+![user_settings_view](./screenshots/user_settings_view.png)
+
+Navigate to Access Tokens to proceed to generate an access token. Give it a name and expiry date.
+
+![generate_ptoken](./screenshots/generate_ptoken.png)
+
+Once the token is generated, keep it in a secure place. We'll use this token to auto-populate the projects in gitlab server.
+
+![ptoken_done](./screenshots/ptoken_done.png)
+
+
+We'll now run `fetch_repo.py` to pull projects of a specified language from github and push them to gitlab.
+
+```
+python3 fetch_repos.py [github_username] [github_password]
+```
+Running this command with valid github credentials will then prompt to provide the personal access token which we obtained earlier. Upon entering the token, projects are set up in gitlab.
+
+![repo_fetch](./screenshots/repo_fetch.png)
+
+We can now check gitlab whether all the repos have been set up. We'll setup jenkins now.
+
+![repo_setup_gitlab](./screenshots/repo_setup_gitlab.png)
+
+# Jenkins - Setup
+
+## Install Jenkins
+
+``` zsh
+sudo docker pull jenkins
+```
+
+``` bash
+sudo docker run -p 8080:8080 --name=jenkins-master jenkins
+```
+
+Once the jenkins container is running, we need to do a one time setup. As you can see in the terminal, copy the password printed or alternatively the password is always available at : ``` /var/jenkins_home/secrets/initialAdminPassword```
+
+![terminal_jenkins_install](./screenshots/jenkins-installed_new.png)
+
+For this, first login into the container by running the command,
+
+``` sudo docker exec -i -t jenkins-master(name_of_the_image) /bin/bash```
+
+Then navigate to the above path and copy the `initialAdminPassword` to the clipboard
+
+• Now goto `http://localhost:8080/` to find the jenkins up and running as in Fig 1.2
+![jenkins_initial_admin_pwd](./screenshots/initial_damin_pwd.png)
+
+Now Paste the `initialAdminPassword` in the clipboard in the jenkins webpage as in Fig 1.3
+
+Click continue. Now jenkins gives options for a custom/suggested installation as in Fig 1.4. We select suggested installation.
+![customize_jenkins](./screenshots/customize_jenkins.png)
+
+This will install the standard components as in Fig 1.5
+
+![jenkins_standard_installation](./screenshots/suggested_setup.png)
+
+Once the installation is done, jenkins brings you to create first user. Create an user as shown in Fig 1.6
+
+![jenkins_first_user_creation](./screenshots/first_admin_user_jenkins.png)
+
+Once the user is created, click complete and jenkins in now ready to use! Fig 1.7
+![jenkins_user_setup_done](./screenshots/jenkins_ready_to_use.png)
+
+A fresh view of jenkins should look like Fig 1.8
+
+![jenkins_running_done](./screenshots/jenkins_ready.png)
+
+We now need to setup plugins in jenkins. Run the install_plugins script - `python3 install_plugins.py`</br>
+If the output is `True`, run the command `docker restart jenkins-master` to restart jenkins
+
+![plugin_install](./screenshots/plugin_install.png)
+
+### Now we need to configure the gitlab plugin.
+
+Go to `Manage Jenkins` > `Configure System`. Here gitlab section is not configured and should look like this one below
+
+![gitlab_config](./screenshots/gitlab_config.png)
+
+We need to give some details:</br>
+• Connection name : A name for gitlab connection which we'll later refer in each of the job created as well as job DSL. This connection is global for jenkins. We'll give ```gitlab``` as the name.
+
+• Gitlab host url: This is the url of the gitlab container running in the system. We enter `http://172.17.0.2:80/`
+
+• Credentials : We don't have any gitlab credentials setup as of now. We'll create a new one as below. Click on the `Add` button to setup a new credential. Enter the gitlab personal access token generated before. Jenkins will use this credential for various purposes like fetching the repos for jobs</br>
+
+![jenkins_api_credential](./screenshots/jenkins_api_credential.png)
+
+Once this is setup, click on test connection. This should return `success` as shown below.
+
+![jenkins_con_success](./screenshots/jenkins_conn_success.png)
+
+> If you are getting any error, check the url of gitlab. It should not be localhost. Since we are running gitlab and jenkins through docker, jenkins and gitlab are running in the LAN of docker. Jenkins needs to refer to gitlab within that network. So, to get the address of gitlab, in bash of gitlab, find the url at `/etc/hosts` file. Enter that url here.
+
+## Job Creation
+
+We need to create jobs for each of the repos setup in gitlab. For this we'll use job DSL plugin to do it. Job DSL is written in groovy to fetch all the projects in gitlab and setup a job for each of the repo setup in gitlab. Below is the code for job DSL
+
+> Note: We are using the IP of jenkins and the `private_token` is the Personal Access Token obtained from Gitlab earlier. The token will be different for you. Replace the token in `create_master_job.py` before running the script. If the IP is also different, replace that too.
+
+``` groovy
+
+// This is the Private Access token obtained in GitLab. Please replace this with the one you obtained in create_master_job.py. 
+String private_token = "DjotJ94w7GRsRdU6eDWt"
+// If the address of jenkins is different from this, please replace that too.
+String ip = "http://172.17.0.3:80/"
+        // We need to fetch URLs of all the repos in order to create a job for each of them
+		def jdata = new groovy.json.JsonSlurper().parseText(new URL("http://172.17.0.3:80/api/v3/projects?private_token="+private_token).text)
+		jdata.each {
+			String repo_url = it.ssh_url_to_repo
+          	repo_url = repo_url.replace("git@gitlab.example.com:",ip)
+            String proj =  repo_url.substring(repo_url.lastIndexOf('/') + 1);
+			String project_name =  proj[0..-5]
+            job(project_name) {
+                // Basic details of the job
+                description('A job for the project: ' + project_name)
+                displayName(project_name)
+
+                // SCM details of the repo
+                scm {
+                    git {
+                    branch('master')
+                    remote { 
+                        url(repo_url)
+                        credentials('gitlab-root-user')
+                    }
+                    }
+                }
+
+                // Build steps
+                steps {
+                    gradle('check')
+                    gradle {
+                        tasks('clean')
+                        tasks('build')
+                        switches('--stacktrace')
+                        switches('--debug')
+                    }
+                    
+                }
+                
+                // Setting up Jacoco Code coverage
+                publishers {
+                    jacocoCodeCoverage {
+                        execPattern '**/**.exec'
+                        classPattern '**/classes'
+                        sourcePattern '**/src/main/java'
+                        exclusionPattern ''
+                        inclusionPattern ''
+                    }
+                
+                }
+                
+                // Setting up triggers for Gitlab
+                triggers {
+                        gitlabPush {
+                            buildOnMergeRequestEvents(true)
+                            buildOnPushEvents(true)
+                        }
+                    }
+  
+                authenticationToken('auhgtbereb675nksnwewrhbbe==')
+  
+            }
+	}
+```
+We use this code as part of the script in a master job xml. We again use python jenkins to create a master job and then build the created job. This job will inturn create a job for each of the repo in gitlab. It is important to verify the url and replace the `private_token` with the one we got in gitlab.</br>
+
+We need to now run the create_master_job script which will accomplish all of this. Open terminal and run the command `python3 create_master_job.py` </br>
+
+This has now created a job for each of the repo present in the gitlab as shown below
+
+![jobs_created](./screenshots/jobs_created.png)
+
+## Webhooks
+
+Once all the jobs are created in the jenkins, we need to create webhooks. For this we'll run `jenkins_job_fetch.py` which will look at all the jobs created and add webhook to each of the repo in gitlab using python gitlab. Run the command `python3 jenkins_job_fetch.py`. Then head to gitlab to see webhooks created for each project as shown below.</br>
+
+You can naviagate to Integrations part of any of the repo to find the hook created. 
+
+![navigate_to_hook](./screenshots/navigate_to_hook.png)
+
+In the integrations part, once you scroll down, you can see the hook. Click on test and you should see a success message on top. As you can see, the url in the the webhook is the project url of jenkins job.
+
+![hook_created](./screenshots/hook_created.png)
+
+![hook_success](./screenshots/hook_success.png)
+
+Now any push in the repo will automatically trigger a build in jenkins. Lets try that out!</br>
+
+Lets edit the README.md file and push the changes to see if its triggering a build.
+
+![readme_edit](./screenshots/readme_edit.png)
+
+Once the changes are pushed, we head to jenkins job for the same project `MPAndroidChart` and we can see builds have been triggered. On the left bottom corner, we can see builds and a message indicating `Started ​by ​GitLab ​push ​by ​Administrator`
+
+![jenkins_build_trigger](./screenshots/jenkins_build_trigger.png)
+
+# Code Coverage
+
+If the gradlew configuration and build.gradle is correct, builds should work fine and code coverage reports should be generated as below.
+
+![jacoco_0](./screenshots/jacoco_0.png)
+
+![jacoco_1](./screenshots/jacoco_1.png)
+
+![jacoco_2](./screenshots/jacoco_2.png)
+
+> If a project does not build successfully, we have a repo for which Jacoco works very well. You can find that repo [here](https://github.com/sandeepjoshi1910/TokBox-BookStore)
+
+# Understand
+
+We use understand to generate the reports for the code analysis. The script `understand.py` interactively asks for the following parameters
+
+* Path to the folder containing understand tool 
+* Path to the repo to be analyzed
+* path for the results to be stored
+* Name of understand project
+
+```
+python3 understand.py
+```
+
+![class_metrics](./screenshots/class_metrics.png)
+![file_metrics](./screenshots/file_metrics.png)
+![prog_complex](./screenshots/prog_complex.png)
+![proj_metrics](./screenshots/proj_metrics.png)
+
+
+# Repository metadata analytics
+
+## Running the routine
+
+Run the following command to initiate the script. This script is independent of directory due to the fact that
+its talking to the GITHUB API directly. 
+
+```
+python3 git_analytics.py <your_github_username> <your_github_password>
+```
+
+This will then ask for a a language for which you want to see the analytics for.
+You may input any language of your choice, but for this excercise input the exact same language as you did to fetch the repositories in ```'fetch_repos.py'```.
+
+After you input the argument, the script will start talking to the API and loop over 15 (predifened range for repos in the script) repositories and analyse for each of the last 4 commits, which files were changed the most. 
+This is indicative of more bugs arising in these file as larger changes tend to be more prone to failed testing.
+
+It will output something like: 
+
+![Output](./screenshots/output.png)
+
+It will also create a file named "analytics.md", which is the output file generated in markdown and will contain the output for all 15 repositories.
+
+Note: *You may delete the analytics.md file as its a previously generated file and run your script fresh to generated a new file.*
+
+# Tests
+
+### 1. Fetching repos
+
+`fetch_repo_test.py` runs the fetch_repo.py and checks whether the no of repos set to import from github is indeed pushed to gitlab
+
+### 2. Plugin Installation
+
+`plugin_install_test.py` installs the plugins by running the `install_plugins.py` and fetches all plugins installed in jenkins to see if the plugins installed by the script was indeed installed.
+
+### 3. Jenkins Job creation
+
+`jenkins_job_test.py` runs the create_master_job.py to create jobs for each of the repo present in gitlab. Then checks if no of jobs created are equal to the no of repos present.
+
+### 4. Webhook creation
+
+`webhook_test.py` runs the jenkins_job_fetch.py to add webhooks for each jenkins job associated with the gitlab repo. Now once webhooks are setup, we push a sample text file to one of the repo and then check if there was an increment in the build number for the corresponding jenkins job.
+
+
+
