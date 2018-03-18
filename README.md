@@ -100,7 +100,7 @@ A fresh view of jenkins should look like Fig 1.8
 
 ![jenkins_running_done](./screenshots/jenkins_ready.png)
 
-We now need to setup plugins in jenkins. Run the install_plugins script - `python3 install_plugins.py`</br>
+We now need to setup plugins in jenkins. Run the install_plugins script - `python3 install_plugins.py`<br>
 If the output is `True`, run the command `docker restart jenkins-master` to restart jenkins
 
 ![plugin_install](./screenshots/plugin_install.png)
@@ -111,12 +111,12 @@ Go to `Manage Jenkins` > `Configure System`. Here gitlab section is not configur
 
 ![gitlab_config](./screenshots/gitlab_config.png)
 
-We need to give some details:</br>
+We need to give some details:<br>
 • Connection name : A name for gitlab connection which we'll later refer in each of the job created as well as job DSL. This connection is global for jenkins. We'll give ```gitlab``` as the name.
 
 • Gitlab host url: This is the url of the gitlab container running in the system. We enter `http://172.17.0.2:80/`
 
-• Credentials : We don't have any gitlab credentials setup as of now. We'll create a new one as below. Click on the `Add` button to setup a new credential. Enter the gitlab personal access token generated before. Jenkins will use this credential for various purposes like fetching the repos for jobs</br>
+• Credentials : We don't have any gitlab credentials setup as of now. We'll create a new one as below. Click on the `Add` button to setup a new credential. Enter the gitlab personal access token generated before. Jenkins will use this credential for various purposes like fetching the repos for jobs<br>
 
 ![jenkins_api_credential](./screenshots/jenkins_api_credential.png)
 
@@ -201,9 +201,9 @@ String ip = "http://172.17.0.3:80/"
             }
 	}
 ```
-We use this code as part of the script in a master job xml. We again use python jenkins to create a master job and then build the created job. This job will inturn create a job for each of the repo in gitlab. It is important to verify the url and replace the `private_token` with the one we got in gitlab.</br>
+We use this code as part of the script in a master job xml. We again use python jenkins to create a master job and then build the created job. This job will inturn create a job for each of the repo in gitlab. It is important to verify the url and replace the `private_token` with the one we got in gitlab.<br>
 
-We need to now run the create_master_job script which will accomplish all of this. Open terminal and run the command `python3 create_master_job.py` </br>
+We need to now run the create_master_job script which will accomplish all of this. Open terminal and run the command `python3 create_master_job.py` <br>
 
 This has now created a job for each of the repo present in the gitlab as shown below
 
@@ -211,7 +211,7 @@ This has now created a job for each of the repo present in the gitlab as shown b
 
 ## Webhooks
 
-Once all the jobs are created in the jenkins, we need to create webhooks. For this we'll run `create_webhooks.py` which will look at all the jobs created and add webhook to each of the repo in gitlab using python gitlab. Run the command `python3 create_webhooks.py`. Then head to gitlab to see webhooks created for each project as shown below.</br>
+Once all the jobs are created in the jenkins, we need to create webhooks. For this we'll run `create_webhooks.py` which will look at all the jobs created and add webhook to each of the repo in gitlab using python gitlab. Run the command `python3 create_webhooks.py`. Then head to gitlab to see webhooks created for each project as shown below.<br>
 
 You can naviagate to Integrations part of any of the repo to find the hook created. 
 
@@ -223,7 +223,7 @@ In the integrations part, once you scroll down, you can see the hook. Click on t
 
 ![hook_success](./screenshots/hook_success.png)
 
-Now any push in the repo will automatically trigger a build in jenkins. Lets try that out!</br>
+Now any push in the repo will automatically trigger a build in jenkins. Lets try that out!<br>
 
 Lets edit the README.md file and push the changes to see if its triggering a build.
 
