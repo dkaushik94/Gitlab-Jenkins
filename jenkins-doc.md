@@ -2,7 +2,10 @@
 
 ## Installing GitLab using the docker image
 
-Run the following command to install gitlab. Once installed, we can see gitlab container running.
+> The setup requires docker. Find information to install docker [here](https://docs.docker.com/install/)
+
+Run the following command to install gitlab. Once installed, we can see gitlab container running. You can find this info by running the command `docker ps -a`
+
 
 ```
 sudo docker run --detach \
@@ -15,8 +18,7 @@ gitlab/gitlab-ce:latest
 
 ![gitlab_install](./screenshots/gitlab_run.png)
 
-Now go to `https://localhost:80/` to find gitlab up and running. If its not available yet, wait for few minutes till you can see gitlab up and healty. You can find this info by running the command `docker ps -a`
-
+Now go to `https://localhost:80/` to find gitlab up and running. If its not available yet, wait for few minutes till you can see gitlab up and healty. 
 ![gitlab_running](./screenshots/gitlab_running.png)
 
 Setup a new password and this will be the password for the user `root` which is by default an admin user. You can create more users as required. Once the password is setup, you can login to gitlab as shown below.
@@ -120,15 +122,15 @@ We need to give some details:</br>
 
 Once this is setup, click on test connection. This should return `success` as shown below.
 
-![gitlab_con_success](./screenshots/gitlab_con_success.png)
+![jenkins_con_success](./screenshots/jenkins_conn_success.png)
 
-> If you are getting any error, check the url of gitlab. It should not be localhost. Since we are running gitlab and jenkins through docker, jenkins and gitlab are running in the lan of docker. jenkins needs to refer to gitlab within that network. So, to get the address of gitlab, in bash of gitlab, find the url at `/etc/hosts` file. Enter that url here.
+> If you are getting any error, check the url of gitlab. It should not be localhost. Since we are running gitlab and jenkins through docker, jenkins and gitlab are running in the LAN of docker. Jenkins needs to refer to gitlab within that network. So, to get the address of gitlab, in bash of gitlab, find the url at `/etc/hosts` file. Enter that url here.
 
 ## Job Creation
 
 We need to create jobs for each of the repos setup in gitlab. For this we'll use job DSL plugin to do it. Job DSL is written in groovy to fetch all the projects in gitlab and setup a job for each of the repo setup in gitlab. Below is the code for job DSL
 
-> Note: We are using the ip of jenkins and the `private_token` is the Personal Access Token obtained from Gitlab earlier. The token will be different for you. Replace the token in `create_master_job.py` before running the script. If the ip is also different, replace that too.
+> Note: We are using the IP of jenkins and the `private_token` is the Personal Access Token obtained from Gitlab earlier. The token will be different for you. Replace the token in `create_master_job.py` before running the script. If the IP is also different, replace that too.
 
 ``` groovy
 
@@ -163,11 +165,10 @@ String ip = "http://172.17.0.3:80/"
                 steps {
                     gradle('check')
                     gradle {
-                    tasks('clean')
-                    tasks('build')
-                    switches('--stacktrace')
-                    switches('--debug')
-                
+                        tasks('clean')
+                        tasks('build')
+                        switches('--stacktrace')
+                        switches('--debug')
                     }
                     
                 }
@@ -219,7 +220,7 @@ In the integrations part, once you scroll down, you can see the hook. Click on t
 
 ![hook_success](./screenshots/hook_success.png)
 
-Now any push or commits in the repo will automatically trigger a build in jenkins. Lets try that out!</br>
+Now any push in the repo will automatically trigger a build in jenkins. Lets try that out!</br>
 
 Lets edit the README.md file and push the changes to see if its triggering a build.
 
@@ -231,7 +232,7 @@ Once the changes are pushed, we head to jenkins job for the same project `MPAndr
 
 # Code Coverage
 
-If the gradlew configuration in build.gradle is correct, builds should work fine and code coverage reports should be generated as below.
+If the gradlew configuration and build.gradle is correct, builds should work fine and code coverage reports should be generated as below.
 
 ![jacoco_0](./screenshots/jacoco_0.png)
 
@@ -239,9 +240,16 @@ If the gradlew configuration in build.gradle is correct, builds should work fine
 
 ![jacoco_2](./screenshots/jacoco_2.png)
 
+> If a project does not build successfully, we have a repo for which Jacoco works very well. You can find that repo [here](https://github.com/sandeepjoshi1910/TokBox-BookStore)
+
 # Understand
 
-We use understand to generate the reports for the code analysis. The script `understand.py` uses the understand tool and generates all the results as below.
+We use understand to generate the reports for the code analysis. The script `understand.py` interactively asks for the following parameters
+
+* Path to the folder containing understand tool 
+* Path to the repo to be analyzed
+* path for the results to be stored
+* Name of understand project
 
 ```
 python3 understand.py
@@ -253,7 +261,48 @@ python3 understand.py
 ![proj_metrics](./screenshots/proj_metrics.png)
 
 
+# Repository metadata analytics
 
+## Running the routine
+
+Run the following command to initiate the script. This script is independent of directory due to the fact that
+its talking to the GITHUB API directly. 
+
+```
+python3 git_analytics.py <your_github_username> <your_github_password>
+```
+
+This will then ask for a a language for which you want to see the analytics for.
+You may input any language of your choice, but for this excercise input the exact same language as you did to fetch the repositories in ```'fetch_repos.py'```.
+
+After you input the argument, the script will start talking to the API and loop over 15 (predifened range for repos in the script) repositories and analyse for each of the last 4 commits, which files were changed the most. 
+This is indicative of more bugs arising in these file as larger changes tend to be more prone to failed testing.
+
+It will output something like: 
+
+![Output](./screenshots/output.png)
+
+It will also create a file named "analytics.md", which is the output file generated in markdown and will contain the output for all 15 repositories.
+
+Note: *You may delete the analytics.md file as its a previously generated file and run your script fresh to generated a new file.*
+
+# Tests
+
+### 1. Fetching repos
+
+`fetch_repo_test.py` runs the fetch_repo.py and checks whether the no of repos set to import from github is indeed pushed to gitlab
+
+### 2. Plugin Installation
+
+`plugin_install_test.py` installs the plugins by running the `install_plugins.py` and fetches all plugins installed in jenkins to see if the plugins installed by the script was indeed installed.
+
+### 3. Jenkins Job creation
+
+`jenkins_job_test.py` runs the create_master_job.py to create jobs for each of the repo present in gitlab. Then checks if no of jobs created are equal to the no of repos present.
+
+### 4. Webhook creation
+
+`webhook_test.py` runs the jenkins_job_fetch.py to add webhooks for each jenkins job associated with the gitlab repo. Now once webhooks are setup, we push a sample text file to one of the repo and then check if there was an increment in the build number for the corresponding jenkins job.
 
 
 
