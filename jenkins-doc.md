@@ -229,6 +229,28 @@ Once the changes are pushed, we head to jenkins job for the same project `MPAndr
 
 ![jenkins_build_trigger](./screenshots/jenkins_build_trigger.png)
 
+# Code Coverage
+
+If the gradlew configuration in build.gradle is correct, builds should work fine and code coverage reports should be generated as below.
+
+![jacoco_0](./screenshots/jacoco_0.png)
+
+![jacoco_1](./screenshots/jacoco_1.png)
+
+![jacoco_2](./screenshots/jacoco_2.png)
+
+# Understand
+
+We use understand to generate the reports for the code analysis. The script `understand.py` uses the understand tool and generates all the results as below.
+
+```
+python3 understand.py
+```
+
+![class_metrics](./screenshots/class_metrics.png)
+![file_metrics](./screenshots/file_metrics.png)
+![prog_complex](./screenshots/prog_complex.png)
+![proj_metrics](./screenshots/proj_metrics.png)
 
 
 
