@@ -122,9 +122,12 @@ We need to give some details:</br>
 
 Once this is setup, click on test connection. This should return `success` as shown below.
 
+> Uncheck `Enable authentication for project Endpoint`. We'll disable authentication so that webhook works without a token.
+
 ![jenkins_con_success](./screenshots/jenkins_conn_success.png)
 
 > If you are getting any error, check the url of gitlab. It should not be localhost. Since we are running gitlab and jenkins through docker, jenkins and gitlab are running in the LAN of docker. Jenkins needs to refer to gitlab within that network. So, to get the address of gitlab, in bash of gitlab, find the url at `/etc/hosts` file. Enter that url here.
+
 
 ## Job Creation
 
